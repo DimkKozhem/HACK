@@ -34,12 +34,12 @@ if 'Тема' in df.columns and 'date' in df.columns:
 
     # Group by category, count, and select top 10
     category_counts = (
-        filtered_data['Тема']
+        filtered_data['Категория']
         .value_counts()
         .head(10)
         .reset_index()
     )
-    category_counts.columns = ['Тема', 'Количество']
+    category_counts.columns = ['Категория', 'Количество']
 
     # Function to wrap text for labels
     def wrap_text(text, max_len=15):
@@ -53,7 +53,7 @@ if 'Тема' in df.columns and 'date' in df.columns:
             return text
 
     # Apply text wrapping to 'Тема' column
-    category_counts['Тема'] = category_counts['Тема'].apply(wrap_text)
+    category_counts['Категория'] = category_counts['Категория'].apply(wrap_text)
 
     # Select chart type
     chart_type = st.selectbox(
@@ -65,7 +65,7 @@ if 'Тема' in df.columns and 'date' in df.columns:
     if chart_type == "Столбиковая диаграмма":
         fig = px.bar(
             category_counts,
-            x="Тема",
+            x="Категория",
             y="Количество",
             title=f"Топ-10 категорий за выбранные месяцы",
             labels={"Количество": "Количество", "Тема": "Темы"},
@@ -75,24 +75,30 @@ if 'Тема' in df.columns and 'date' in df.columns:
             height=800
         )
         fig.update_xaxes(tickangle=90)  # Make x-axis labels vertical
-        fig.update_layout(xaxis_tickfont_size=20)  # Adjust font size if needed
+        fig.update_layout(xaxis_tickfont_size=30)  # Adjust font size if needed
         # Fix the Y-axis scale by setting a range
         fig.update_yaxes(range=[0, category_counts['Количество'].max() + 10])
 
     elif chart_type == "Круговая диаграмма":
         fig = px.pie(
             category_counts,
-            names="Тема",
+            names="Категория",
             values="Количество",
             title=f"Топ-10 категорий за выбранные месяцы",
             color_discrete_sequence=px.colors.sequential.Viridis,
             width=1400,
             height=800
         )
+        fig.update_layout(
+            margin=dict(l=20, r=10, t=50, b=50),
+            xaxis_title_standoff=50,
+            yaxis_title_standoff=50,
+            title_font_size=50
+        )
     elif chart_type == "Горизонтальная диаграмма":
         fig = px.bar(
             category_counts,
-            y="Тема",
+            y="Категория",
             x="Количество",
             title=f"Топ-10 категорий за выбранные месяцы",
             labels={"Количество": "Количество", "Тема": "Темы"},
@@ -103,14 +109,14 @@ if 'Тема' in df.columns and 'date' in df.columns:
             height=800
         )
         fig.update_yaxes(tickangle=0)  # Keep y-axis labels horizontal
-        fig.update_layout(yaxis_tickfont_size=30)  # Adjust font size if needed
+        fig.update_layout(yaxis_tickfont_size=50)  # Adjust font size if needed
 
     # Update layout for smaller text and larger plot area
     fig.update_layout(
-        margin=dict(l=30, r=20, t=60, b=60),
-        xaxis_title_standoff=10,
-        yaxis_title_standoff=10,
-        title_font_size=30
+        margin=dict(l=30, r=30, t=70, b=70),
+        xaxis_title_standoff=40,
+        yaxis_title_standoff=40,
+        title_font_size=40
     )
     fig.update_xaxes(tickfont=dict(size=15))
     fig.update_yaxes(tickfont=dict(size=15))
@@ -166,8 +172,8 @@ if 'date' in df.columns and 'Тема' in df.columns and 'Категория' in
         fig.update_xaxes(tickangle=90)  # Поворот меток по оси X
         fig.update_layout(
             margin=dict(l=30, r=20, t=60, b=60),
-            xaxis_title_standoff=10,
-            yaxis_title_standoff=10,
+            xaxis_title_standoff=30,
+            yaxis_title_standoff=30,
             title_font_size=30
         )
 
@@ -200,8 +206,8 @@ if 'date' in df.columns and 'Тема' in df.columns and 'Категория' in
             # Получаем больше пространства для текста
             fig.update_layout(
                 margin=dict(l=30, r=20, t=60, b=60),
-                xaxis_title_standoff=10,
-                yaxis_title_standoff=10,
+                xaxis_title_standoff=30,
+                yaxis_title_standoff=30,
                 title_font_size=30
             )
             fig.update_xaxes(tickfont=dict(size=15))
@@ -278,8 +284,8 @@ if 'date' in df_emotion.columns and 'emotion' in df_emotion.columns:
         fig.update_xaxes(tickangle=90)
         fig.update_layout(
             margin=dict(l=30, r=20, t=60, b=60),
-            xaxis_title_standoff=10,
-            yaxis_title_standoff=10,
+            xaxis_title_standoff=30,
+            yaxis_title_standoff=30,
             title_font_size=30
         )
 
@@ -309,8 +315,8 @@ if 'date' in df_emotion.columns and 'emotion' in df_emotion.columns:
             fig.update_xaxes(tickangle=90)
             fig.update_layout(
                 margin=dict(l=30, r=20, t=60, b=60),
-                xaxis_title_standoff=10,
-                yaxis_title_standoff=10,
+                xaxis_title_standoff=30,
+                yaxis_title_standoff=30,
                 title_font_size=30
             )
 
@@ -321,7 +327,7 @@ else:
     st.error("Данные не содержат нужных колонок.")
 
 # _________________________________________________________
-df_emotion = df_emotion.drop('Unnamed: 0', axis=1)
+df_emotion = df_emotion.drop(['Unnamed: 0','contains_similar_buhexpert','clear_text'], axis=1)
 
 st.title('Комментарии с упоминаниями "БухЭксперт8"')
 st.markdown("""
